@@ -1,0 +1,130 @@
+<?php
+
+namespace DummyNamespace;
+
+use App\Http\Requests\{{ model }}FormRequest;
+use {{ namespacedModel }};
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
+use DummyRootNamespaceHttp\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+
+/**
+ * Class DummyClass
+ * @package App\Http\Controllers
+ */
+class DummyClass extends Controller
+{
+    /**
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * CompanyController constructor.
+     * @param Request $request
+     */
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+        $this->authorizeResource({{ model }}::class);
+    }
+
+    /**
+     * @return Builder
+     */
+    public function getModels(): Builder
+    {
+        return {{ model }}::{{ with }}search($this->request);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return View
+     */
+    public function index(): View
+    {
+        ${{ modelVariables }} = $this->getModels()->paginate(request('limit'));
+        return view('{{ table }}.index', compact('{{ modelVariables }}'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return View
+     */
+    public function create(): View
+    {
+        return view('{{ table }}.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param {{ model }}FormRequest $request
+     * @return RedirectResponse
+     */
+    public function store({{ model }}FormRequest $request): RedirectResponse
+    {
+        ${{ modelVariable }} = new {{ model }}();
+        ${{ modelVariable }}->fill(
+            $request->all()
+        )->save();
+        return redirect()->route('{{ table }}.show', compact('{{ modelVariable }}'))
+            ->with('success_message', trans('messages.create.success'));
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param {{ model }} ${{ modelVariable }}
+     * @return View
+     */
+    public function show({{ model }} ${{ modelVariable }}): View
+    {
+        return view('{{ table }}.show', compact('{{ modelVariable }}'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param {{ model }} ${{ modelVariable }}
+     * @return View
+     */
+    public function edit({{ model }} ${{ modelVariable }}): View
+    {
+        return view('{{ table }}.edit', compact('{{ modelVariable }}'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param {{ model }}FormRequest $request
+     * @param {{ model }} ${{ modelVariable }}
+     * @return RedirectResponse
+     */
+    public function update({{ model }}FormRequest $request, {{ model }} ${{ modelVariable }}): RedirectResponse
+    {
+        ${{ modelVariable }}->fill(
+            $request->all()
+        )->save();
+        return redirect()->route('{{ table }}.show', compact('{{ modelVariable }}'))
+            ->with('success_message', trans('messages.edit.success'));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param {{ model }} ${{ modelVariable }}
+     * @return RedirectResponse
+     * @throws \Exception
+     */
+    public function destroy({{ model }} ${{ modelVariable }}): RedirectResponse
+    {
+        ${{ modelVariable }}->delete();
+        return redirect()->route('{{ table }}.index')
+            ->with('success_message', trans('messages.delete.success'));
+    }
+}

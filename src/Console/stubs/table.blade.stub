@@ -1,0 +1,10 @@
+<table class="table table-striped" style="white-space: nowrap;">
+    <thead>
+    <tr>
+        {{ TableHeadRow }}
+    </tr>
+    </thead>
+    <tbody>
+    {{ TableRowsBody }}
+    </tbody>
+</table>

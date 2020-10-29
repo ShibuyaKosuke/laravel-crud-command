@@ -1,0 +1,24 @@
+<div id="filter" style="display: none;">
+    <form class="jumbotron border p-3 mb-3">
+        <div class="row">
+            <div class="col">
+                <h5>Filter by</h5>
+
+                {{ FormElements }}
+            </div>
+        </div>
+        <hr class="my-3">
+        <div class="row">
+            <div class="col">
+                <button class="btn btn-outline-primary" type="submit">
+                    {{ __('buttons.filter') }}
+                </button>
+            </div>
+            <div class="col text-right">
+                <a class="btn btn-link" role="button">
+                    {{ __('buttons.cancel') }}
+                </a>
+            </div>
+        </div>
+    </form>
+</div>

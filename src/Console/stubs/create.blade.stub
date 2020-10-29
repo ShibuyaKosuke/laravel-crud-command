@@ -1,0 +1,24 @@
+@extends('{{ bladeParentFile }}')
+
+@section('content')
+    <div class="container">
+
+        {{ Breadcrumbs::render() }}
+
+        {{ LaraForm::open(['url' => route('{{ table }}.store')]) }}
+        <div class="card">
+            <div class="card-header">
+                {{ pageTitle }}
+            </div>
+            <div class="card-body">
+
+                {{ FormElements }}
+
+            </div>
+            <div class="card-footer pb-0">
+                {{ LaraForm::submit() }}
+            </div>
+        </div>
+        {{ LaraForm::close() }}
+    </div>
+@endsection

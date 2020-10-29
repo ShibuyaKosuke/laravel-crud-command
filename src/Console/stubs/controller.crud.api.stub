@@ -1,0 +1,99 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Http\Requests\{{ model }}FormRequest;
+use {{ namespacedModel }};
+use Illuminate\Database\Eloquent\Builder;
+use {{ rootNamespace }}Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+
+class {{ class }} extends Controller
+{
+    /**
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * CompanyController constructor.
+     * @param Request $request
+     */
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+        $this->authorizeResource({{ model }}::class);
+    }
+
+    /**
+     * @return Builder
+     */
+    public function getModels(): Builder
+    {
+        return {{ model }}::{{ with }}search($this->request);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function index()
+    {
+        return $this->getModels()->paginate(request('limit'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param {{ model }}FormRequest $request
+     * @return {{ model }}
+     */
+    public function store({{ model }}FormRequest $request): {{ model }}
+    {
+        ${{ modelVariable }} = new {{ model }}();
+        ${{ modelVariable }}->fill(
+            $request->all()
+        )->save();
+        return ${{ modelVariable }};
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param {{ model }} ${{ modelVariable }}
+     * @return {{ model }}
+     */
+    public function show({{ model }} ${{ modelVariable }}): {{ model }}
+    {
+        return ${{ modelVariable }};
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param {{ model }}FormRequest $request
+     * @param {{ model }} ${{ modelVariable }}
+     * @return {{ model }}
+     */
+    public function update({{ model }}FormRequest $request, {{ model }} ${{ modelVariable }}): {{ model }}
+    {
+        ${{ modelVariable }}->fill(
+            $request->all()
+        )->save();
+        return ${{ modelVariable }};
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param {{ model }} ${{ modelVariable }}
+     * @return bool
+     * @throws \Exception
+     */
+    public function destroy({{ model }} ${{ modelVariable }}): bool
+    {
+        return ${{ modelVariable }}->delete();
+    }
+}

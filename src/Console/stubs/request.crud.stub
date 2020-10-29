@@ -1,0 +1,44 @@
+<?php
+
+namespace DummyNamespace;
+
+use ShibuyaKosuke\LaravelDatabaseValidator\Facades\ValidationRule;
+use Illuminate\Foundation\Http\FormRequest;
+
+class DummyClass extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    public function rules(): array
+    {
+        return array_merge(
+            ValidationRule::get('{{ modelVariables }}'),
+            [
+                //
+            ]
+        );
+    }
+
+    public function attributes(): array
+    {
+        return array_merge(
+            trans('columns.{{ modelVariables }}'),
+            [
+                {{ column_trans }}
+            ]
+        );
+    }
+}

@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Models;
+
+use App\Scopes\UserScope;
+use Carbon\Traits\Timestamp;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Notifications\Notifiable;
+use ShibuyaKosuke\LaravelCrudCommand\Traits\AuthorObservable;
+use Watson\Rememberable\Rememberable;
+
+/**
+{{ phpdoc }}
+ * @method Builder search(Request $request)
+ */
+class User extends Authenticatable
+{
+}

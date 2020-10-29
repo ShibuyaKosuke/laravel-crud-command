@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class DummyClass extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::create('DummyTable', function (Blueprint $table) {
+            $table->id()->comment('ID');
+            $table->timestamp('created_at')->nullable()->comment('');
+            $table->timestamp('updated_at')->nullable()->comment('');
+            $table->softDeletes()->comment('');
+            $table->tableComment('table_name');
+        });
+        Schema::enableForeignKeyConstraints();
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('DummyTable');
+    }
+}

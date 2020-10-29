@@ -1,0 +1,93 @@
+@extends('{{ bladeParentFile }}')
+
+@section('content')
+    <div class="container">
+
+        @if (Session::has('success_message'))
+            <div class="alert alert-success">
+                {{ session('success_message') }}
+            </div>
+        @endif
+
+        {{ Breadcrumbs::render() }}
+
+        <div class="row mb-3">
+            <div class="col">
+                {{ Html::linkRoute('{{ table }}.create', __('buttons.create'), null, ['class' => 'btn btn-outline-primary']) }}
+            </div>
+            <div class="col text-right">
+                @if(View::exists('{{ table }}.filter'))
+                    <button type="button" class="btn btn-outline-secondary" data-toggle="toggle" data-target="#filter">
+                        <i class="fas fa-filter"></i>
+                        {{ __('buttons.filter') }}
+                    </button>
+                @endif
+            </div>
+        </div>
+
+        @includeIf('{{ table }}.filter')
+
+        @if(${{ table }}->isEmpty())
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h5><i class="icon fas fa-exclamation-triangle"></i> Alert!</h5>
+                {{ __('messages.nodata') }}
+            </div>
+        @else
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col">{{ pageTitle }}</div>
+                        <div class="col text-right">
+                            {{ __('pages.list_total', ['total' => ${{ modelVariables }}->total(), 'start' => ${{ modelVariables }}->firstItem(), 'end' => ${{ modelVariables }}->lastItem()]) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped" style="white-space: nowrap;">
+                            <thead>
+                            <tr>
+                                {{ TableHeadRow }}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{ TableRowsBody }}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer pb-0">
+                    <div class="row">
+                        <div class="col pl-2">
+                            {{ pagination }}
+                        </div>
+                        <div class="col pr-2 text-right">
+                            <div class="btn-group mb-3" role="group" aria-label="Basic example">
+                                @foreach(\config('make_crud.perPages') as $limit)
+                                    @if(request('limit') === $limit || (request('limit') === null && $limit === \config('make_crud.defaultPerPage')))
+                                        {{ Html::linkRoute('{{ table }}.index', $limit, ['limit' => $limit], ['class' => 'btn border bg-primary text-white']) }}
+                                    @else
+                                        {{ Html::linkRoute('{{ table }}.index', $limit, ['limit' => $limit], ['class' => 'btn border bg-white']) }}
+                                    @endif
+                                @endforeach
+
+                                <span class="form-control-plaintext ml-2">{{ __('pages.record_per_page') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+    </div>
+@endsection
+
+@section('js')
+    <script>
+        $(function () {
+            $('[data-toggle="toggle"]').on('click', function () {
+                $($(this).data('target')).slideToggle();
+            });
+        });
+    </script>
+@endsection
