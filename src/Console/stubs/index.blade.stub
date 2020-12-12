@@ -13,10 +13,10 @@
 
         <div class="row mb-3">
             <div class="col">
-                {{ Html::linkRoute('{{ table }}.create', __('buttons.create'), null, ['class' => 'btn btn-outline-primary']) }}
+                {{ Html::linkRoute('{{ route }}.create', __('buttons.create'), null, ['class' => 'btn btn-outline-primary']) }}
             </div>
             <div class="col text-right">
-                @if(View::exists('{{ table }}.filter'))
+                @if(View::exists('{{ route }}.filter'))
                     <button type="button" class="btn btn-outline-secondary" data-toggle="toggle" data-target="#filter">
                         <i class="fas fa-filter"></i>
                         {{ __('buttons.filter') }}
@@ -25,7 +25,7 @@
             </div>
         </div>
 
-        @includeIf('{{ table }}.filter')
+        @includeIf('{{ route }}.filter')
 
         @if(${{ table }}->isEmpty())
             <div class="alert alert-danger alert-dismissible">
@@ -66,9 +66,9 @@
                             <div class="btn-group mb-3" role="group" aria-label="Basic example">
                                 @foreach(\config('make_crud.perPages') as $limit)
                                     @if(request('limit') === $limit || (request('limit') === null && $limit === \config('make_crud.defaultPerPage')))
-                                        {{ Html::linkRoute('{{ table }}.index', $limit, ['limit' => $limit], ['class' => 'btn border bg-primary text-white']) }}
+                                        {{ Html::linkRoute('{{ route }}.index', $limit, ['limit' => $limit], ['class' => 'btn border bg-primary text-white']) }}
                                     @else
-                                        {{ Html::linkRoute('{{ table }}.index', $limit, ['limit' => $limit], ['class' => 'btn border bg-white']) }}
+                                        {{ Html::linkRoute('{{ route }}.index', $limit, ['limit' => $limit], ['class' => 'btn border bg-white']) }}
                                     @endif
                                 @endforeach
 

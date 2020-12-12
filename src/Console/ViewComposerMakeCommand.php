@@ -205,7 +205,7 @@ class ViewComposerMakeCommand extends GeneratorCommand
         $line = sprintf(
             '    \App\Http\ViewComposers\%1$sComposer::class => [\'%2$s.index\', \'%2$s.create\', \'%2$s.edit\'],',
             $model,
-            $table
+            Str::kebab($table)
         );
         if (\File::exists($file) && $content = \File::get($file)) {
             $content = explode(PHP_EOL, trim($content));

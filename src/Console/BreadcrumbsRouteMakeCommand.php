@@ -29,11 +29,17 @@ class BreadcrumbsRouteMakeCommand extends Command
      */
     protected $file;
 
-    public function init()
+    /**
+     * @return void
+     */
+    public function init(): void
     {
         $this->file = base_path("routes/breadcrumbs.php");
     }
 
+    /**
+     * @return void
+     */
     public function handle(): void
     {
         $this->init();
@@ -48,7 +54,11 @@ class BreadcrumbsRouteMakeCommand extends Command
         File::append($this->file, $append);
     }
 
-    private function getFile()
+    /**
+     * @return string
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    private function getFile(): string
     {
         if (!File::exists($this->file)) {
             File::put($this->file, "<?php\n");
@@ -56,17 +66,23 @@ class BreadcrumbsRouteMakeCommand extends Command
         return File::get($this->file);
     }
 
+    /**
+     * @param Table $table
+     * @return string|string[]
+     */
     private function getCode(Table $table)
     {
         $searches = [
             '{{ model }}',
             '{{ tables }}',
             '{{ table }}',
+            '{{ route }}',
         ];
         $replaces = [
             $table->model_name,
             $table->TABLE_NAME,
-            Str::singular($table->TABLE_NAME)
+            Str::singular($table->TABLE_NAME),
+            Str::kebab($table->TABLE_NAME)
         ];
 
         $lines = [];
@@ -80,37 +96,37 @@ class BreadcrumbsRouteMakeCommand extends Command
         }
 
         if (!Breadcrumbs::has("{$table->TABLE_NAME}.index")) {
-            $lines[] = 'Breadcrumbs::for(\'{{ tables }}.index\', function ($trail) {';
+            $lines[] = 'Breadcrumbs::for(\'{{ route }}.index\', function ($trail) {';
             $lines[] = '    $trail->parent(\'home\');';
-            $lines[] = '    $trail->add(trans(\'tables.{{ tables }}\'), route(\'{{ tables }}.index\'));';
+            $lines[] = '    $trail->add(trans(\'tables.{{ tables }}\'), route(\'{{ route }}.index\'));';
             $lines[] = '});';
             $lines[] = '';
         }
 
         if (!Breadcrumbs::has("{$table->TABLE_NAME}.create")) {
-            $lines[] = 'Breadcrumbs::for(\'{{ tables }}.create\', function ($trail) {';
-            $lines[] = '    $trail->parent(\'{{ tables }}.index\');';
-            $lines[] = '    $trail->add(trans(\'pages.create\'), route(\'{{ tables }}.create\'));';
+            $lines[] = 'Breadcrumbs::for(\'{{ route }}.create\', function ($trail) {';
+            $lines[] = '    $trail->parent(\'{{ route }}.index\');';
+            $lines[] = '    $trail->add(trans(\'pages.create\'), route(\'{{ route }}.create\'));';
             $lines[] = '});';
             $lines[] = '';
         }
 
         if (!Breadcrumbs::has("{$table->TABLE_NAME}.show")) {
-            $lines[] = 'Breadcrumbs::for(\'{{ tables }}.show\', function ($trail, ${{ table }}) {';
-            $lines[] = '    $trail->parent(\'{{ tables }}.index\');';
+            $lines[] = 'Breadcrumbs::for(\'{{ route }}.show\', function ($trail, ${{ table }}) {';
+            $lines[] = '    $trail->parent(\'{{ route }}.index\');';
             if ($table->columns->pluck('COLUMN_NAME')->contains('name')) {
-                $lines[] = '    $trail->add(${{ table }}->name, route(\'{{ tables }}.show\', ${{ table }}));';
+                $lines[] = '    $trail->add(${{ table }}->name, route(\'{{ route }}.show\', ${{ table }}));';
             } else {
-                $lines[] = sprintf('    $trail->add(\'%s\' . ${{ table }}->id, route(\'{{ tables }}.show\', ${{ table }}));', $table->model_name);
+                $lines[] = sprintf('    $trail->add(\'%s\' . ${{ table }}->id, route(\'{{ route }}.show\', ${{ table }}));', $table->model_name);
             }
             $lines[] = '});';
             $lines[] = '';
         }
 
         if (!Breadcrumbs::has("{$table->TABLE_NAME}.edit")) {
-            $lines[] = 'Breadcrumbs::for(\'{{ tables }}.edit\', function ($trail, ${{ table }}) {';
-            $lines[] = '    $trail->parent(\'{{ tables }}.show\', ${{ table }});';
-            $lines[] = '    $trail->add(trans(\'pages.edit\'), route(\'{{ tables }}.edit\', ${{ table }}));';
+            $lines[] = 'Breadcrumbs::for(\'{{ route }}.edit\', function ($trail, ${{ table }}) {';
+            $lines[] = '    $trail->parent(\'{{ route }}.show\', ${{ table }});';
+            $lines[] = '    $trail->add(trans(\'pages.edit\'), route(\'{{ route }}.edit\', ${{ table }}));';
             $lines[] = '});';
             $lines[] = '';
         }

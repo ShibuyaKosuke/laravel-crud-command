@@ -5,7 +5,7 @@
 
         {{ Breadcrumbs::render() }}
 
-        {{ LaraForm::open(['method' => 'put', 'url' => route('{{ modelVariables }}.update', compact('{{ modelVariable }}'))]) }}
+        {{ LaraForm::open(['method' => 'put', 'url' => route('{{ route }}.update', compact('{{ modelVariable }}'))]) }}
         <div class="card">
             <div class="card-header">
                 {{ pageTitle }}

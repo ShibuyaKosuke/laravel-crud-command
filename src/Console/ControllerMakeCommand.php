@@ -91,6 +91,8 @@ class ControllerMakeCommand extends ControllerMakeCommandBase
                 '{{model}}' => class_basename($modelClass),
                 '{{ table }}' => Str::snake(Str::plural(class_basename($modelClass))),
                 '{{table}}' => Str::snake(Str::plural(class_basename($modelClass))),
+                '{{ route }}' => Str::kebab(Str::plural(class_basename($modelClass))),
+                '{{route}}' => Str::kebab(Str::plural(class_basename($modelClass))),
                 '{{ with }}' => $this->relations(),
                 'DummyModelVariable' => lcfirst(Str::snake(class_basename($modelClass))),
                 '{{ modelVariable }}' => lcfirst(Str::snake(class_basename($modelClass))),

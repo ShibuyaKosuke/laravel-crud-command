@@ -13,34 +13,34 @@
 
         <div class="row mb-3">
             <div class="col">
-                <a href="{{ route('{{ table }}.create') }}" class="btn btn-outline-primary">
+                <a href="{{ route('{{ route }}.create') }}" class="btn btn-outline-primary">
                     <i class="fas fa-plus"></i>
                     {{ __('buttons.create') }}
                 </a>
             </div>
             <div class="col text-right dropdown">
-                @if(View::exists('{{ table }}.filter'))
+                @if(View::exists('{{ route }}.filter'))
                     <button type="button" class="btn btn-outline-primary" data-toggle="toggle" data-target="#filter">
                         <i class="fas fa-filter"></i>
                         {{ __('buttons.filter') }}
                     </button>
                 @endif
-                @if(Route::has('{{ table }}.export'))
+                @if(Route::has('{{ route }}.export'))
                     <button type="button"  class="btn btn-outline-primary dropdown-toggle" role="button" id="dropdownMenuLink"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                        <i class="fas fa-download"></i>
                        {{ __('buttons.export') }}
                     </button>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="{{ route('{{ table }}.export', ['fileType' => 'csv']) }}">CSV</a>
-                        <a class="dropdown-item" href="{{ route('{{ table }}.export', ['fileType' => 'xlsx']) }}">Excel</a>
-                        <a class="dropdown-item" href="{{ route('{{ table }}.export', ['fileType' => 'pdf']) }}">PDF</a>
+                        <a class="dropdown-item" href="{{ route('{{ route }}.export', ['fileType' => 'csv']) }}">CSV</a>
+                        <a class="dropdown-item" href="{{ route('{{ route }}.export', ['fileType' => 'xlsx']) }}">Excel</a>
+                        <a class="dropdown-item" href="{{ route('{{ route }}.export', ['fileType' => 'pdf']) }}">PDF</a>
                     </div>
                 @endif
             </div>
         </div>
 
-        @includeIf('{{ table }}.filter')
+        @includeIf('{{ route }}.filter')
 
         @if(${{ table }}->isEmpty())
             <div class="alert alert-danger alert-dismissible">
@@ -81,9 +81,9 @@
                             <div class="btn-group mb-3" role="group" aria-label="Basic example">
                                 @foreach(\config('make_crud.perPages') as $limit)
                                     @if(request('limit') === $limit || (request('limit') === null && $limit === \config('make_crud.defaultPerPage')))
-                                        {{ Html::linkRoute('{{ table }}.index', $limit, ['limit' => $limit], ['class' => 'btn border bg-primary text-white']) }}
+                                        {{ Html::linkRoute('{{ route }}.index', $limit, ['limit' => $limit], ['class' => 'btn border bg-primary text-white']) }}
                                     @else
-                                        {{ Html::linkRoute('{{ table }}.index', $limit, ['limit' => $limit], ['class' => 'btn border bg-white']) }}
+                                        {{ Html::linkRoute('{{ route }}.index', $limit, ['limit' => $limit], ['class' => 'btn border bg-white']) }}
                                     @endif
                                 @endforeach
 

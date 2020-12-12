@@ -12,7 +12,7 @@
         {{ Breadcrumbs::render() }}
 
         <div class="mb-3">
-            {{ Html::linkRoute('{{ table }}.edit', __('buttons.edit'), compact('{{ modelVariable }}'), ['class' => 'btn btn-outline-primary']) }}
+            {{ Html::linkRoute('{{ route }}.edit', __('buttons.edit'), compact('{{ modelVariable }}'), ['class' => 'btn btn-outline-primary']) }}
             {{ Form::button(__('buttons.destroy'), ['type' => 'button', 'data-toggle' => 'modal', 'data-target' => '#model-deleting', 'class' => 'btn btn-outline-danger']) }}
         </div>
 

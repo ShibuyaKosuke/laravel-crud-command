@@ -113,6 +113,8 @@ class ViewMakeCommand extends GeneratorCommand
         $replacements = [
             '{{ bladeParentFile }}' => config('make_crud.blade_parent_file'),
             '{{ table }}' => Str::snake(Str::plural(class_basename($modelClass))),
+            '{{ route }}' => Str::kebab(Str::plural(class_basename($modelClass))),
+            '{{route}}' => Str::kebab(Str::plural(class_basename($modelClass))),
             'DummyModelVariable' => lcfirst(Str::snake(class_basename($modelClass))),
             '{{ modelVariable }}' => lcfirst(Str::snake(class_basename($modelClass))),
             '{{modelVariable}}' => lcfirst(Str::snake(class_basename($modelClass))),
@@ -203,9 +205,9 @@ class ViewMakeCommand extends GeneratorCommand
                     $replacement[] = vsprintf(
                         '<dd %s>{{ $%s->%s }}</dd>',
                         [
-                        config('make_crud.view.show.horizontal') ? sprintf('class="%s"', config('make_crud.view.show.dd')) : '',
-                        Str::snake(Str::singular($column->TABLE_NAME)),
-                        Str::snake(Str::singular($column->COLUMN_NAME))
+                            config('make_crud.view.show.horizontal') ? sprintf('class="%s"', config('make_crud.view.show.dd')) : '',
+                            Str::snake(Str::singular($column->TABLE_NAME)),
+                            Str::snake(Str::singular($column->COLUMN_NAME))
                         ]
                     );
                 }
@@ -230,7 +232,7 @@ class ViewMakeCommand extends GeneratorCommand
         $replacement = $table->columns
             ->reject(
                 function (Column $column) {
-                    return in_array($column->COLUMN_NAME, $this->ignoredColumns);
+                    return in_array($column->COLUMN_NAME, $this->ignoredColumns, true);
                 }
             )
             ->map(
@@ -246,7 +248,7 @@ class ViewMakeCommand extends GeneratorCommand
      * @param Column $column
      * @return string
      */
-    private function formElement(Column $column)
+    private function formElement(Column $column): ?string
     {
         $name = sprintf('\'%s\'', $column->COLUMN_NAME);
 
@@ -257,13 +259,13 @@ class ViewMakeCommand extends GeneratorCommand
             sprintf('__(\'columns.%s.name\')', $column->belongs_to->TABLE_NAME) :
             sprintf('__(\'columns.%s.%s\')', $column->TABLE_NAME, $column->COLUMN_NAME);
 
-        $label = ($column->IS_NULLABLE == 'NO' && $this->argument('name') !== 'filter') ?
+        $label = ($column->IS_NULLABLE === 'NO' && $this->argument('name') !== 'filter') ?
             sprintf('[\'html\' => %s . \'%s\']', $trans, config('make_crud.required_html')) :
             $trans;
 
-        if ($this->argument('name') == 'create') {
+        if ($this->argument('name') === 'create') {
             $old = sprintf('old(\'%s\')', $column->COLUMN_NAME);
-        } elseif ($this->argument('name') == 'edit') {
+        } elseif ($this->argument('name') === 'edit') {
             $old = vsprintf(
                 'old(\'%s\', $%s->%s)',
                 [
@@ -272,7 +274,7 @@ class ViewMakeCommand extends GeneratorCommand
                     $column->COLUMN_NAME
                 ]
             );
-        } elseif ($this->argument('name') == 'filter') {
+        } elseif ($this->argument('name') === 'filter') {
             $old = sprintf('$params[\'%s\'] ?? \'\'', $column->COLUMN_NAME);
         }
 
@@ -281,7 +283,7 @@ class ViewMakeCommand extends GeneratorCommand
         if ($belongs_to->pluck('ownColumn')->contains($column->COLUMN_NAME)) {
             $list = $belongs_to->filter(
                 function ($item) use ($column) {
-                    return $item['ownColumn'] == $column->COLUMN_NAME;
+                    return $item['ownColumn'] === $column->COLUMN_NAME;
                 }
             )->map(
                 function ($item) use ($column) {
@@ -324,7 +326,7 @@ class ViewMakeCommand extends GeneratorCommand
      * @param $content
      * @return string
      */
-    protected function tableHeadingReplacements($content)
+    protected function tableHeadingReplacements($content): string
     {
         $indent = ($this->argument('name') === 'index') ? str_repeat('    ', 8) : str_repeat('    ', 2);
         $table = $this->getTableObject();
@@ -339,7 +341,7 @@ class ViewMakeCommand extends GeneratorCommand
             ->map(
                 function (Column $column) use ($html) {
                     if ($this->argument('name') === 'index' && $this->option('sortable')) {
-                        if ($column->belongs_to && !in_array($column->COLUMN_NAME, config('make_crud.columns.author'))) {
+                        if ($column->belongs_to && !in_array($column->COLUMN_NAME, config('make_crud.columns.author'), true)) {
                             $values = [
                                 sprintf("@if(request('sort') == '%s')sort-{{ request('order') }}@endif", $column->COLUMN_NAME),
                                 $column->TABLE_NAME,
@@ -357,7 +359,7 @@ class ViewMakeCommand extends GeneratorCommand
                             ];
                         }
                     } else {
-                        if ($column->belongs_to && !in_array($column->COLUMN_NAME, config('make_crud.columns.author'))) {
+                        if ($column->belongs_to && !in_array($column->COLUMN_NAME, config('make_crud.columns.author'), true)) {
                             $values = [
                                 $column->belongs_to->TABLE_NAME,
                                 'name'
@@ -384,7 +386,7 @@ class ViewMakeCommand extends GeneratorCommand
      * @param $content
      * @return string
      */
-    protected function tableBodyReplacements($content)
+    protected function tableBodyReplacements($content): string
     {
         $index = ($this->argument('name') === 'index');
         $indent = $index ? str_repeat('    ', 9) : str_repeat('    ', 3);
@@ -425,7 +427,7 @@ class ViewMakeCommand extends GeneratorCommand
                 if ($belongs_to->pluck('ownColumn')->contains($column->COLUMN_NAME)) {
                     $row = $belongs_to->filter(
                         function ($item) use ($column) {
-                            return $item['ownColumn'] == $column->COLUMN_NAME;
+                            return $item['ownColumn'] === $column->COLUMN_NAME;
                         }
                     )->map(
                         function ($item) use ($indent, $column) {
@@ -480,7 +482,7 @@ class ViewMakeCommand extends GeneratorCommand
     /**
      * @return Model
      */
-    protected function getTableObject()
+    protected function getTableObject(): Model
     {
         return Table::getByName($this->getTableName());
     }
@@ -501,7 +503,7 @@ class ViewMakeCommand extends GeneratorCommand
      * @param string $stub
      * @return string
      */
-    protected function resolveStubPath($stub)
+    protected function resolveStubPath(string $stub): string
     {
         return file_exists($customPath = $this->laravel->basePath(trim($stub, '/')))
             ? $customPath
@@ -513,7 +515,7 @@ class ViewMakeCommand extends GeneratorCommand
      *
      * @return array
      */
-    protected function getOptions()
+    protected function getOptions(): array
     {
         return array_merge(
             parent::getOptions(),
