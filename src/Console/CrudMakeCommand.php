@@ -179,24 +179,24 @@ class CrudMakeCommand extends Command
         if (version_compare($version, 8, '<')) {
             $line = sprintf(
                 'Route::resource(\'%s\', \'%sController\');' . PHP_EOL,
-                $table->TABLE_NAME,
+                Str::kebab($table->TABLE_NAME),
                 $table->model_name
             );
             $export = sprintf(
                 'Route::get(\'%s/export/{fileType}\', \'%sController@export\')->name(\'%s.export\');' . PHP_EOL,
-                $table->TABLE_NAME,
+                Str::kebab($table->TABLE_NAME),
                 $table->model_name,
                 $table->TABLE_NAME
             );
         } else {
             $line = sprintf(
                 'Route::resource(\'%s\', App\Http\Controllers\%sController::class);' . PHP_EOL,
-                $table->TABLE_NAME,
+                Str::kebab($table->TABLE_NAME),
                 $table->model_name
             );
             $export = sprintf(
                 'Route::get(\'%s/export/{fileType}\', [App\Http\Controllers\%sController::class, \'export\'])->name(\'%s.export\');' . PHP_EOL,
-                $table->TABLE_NAME,
+                Str::kebab($table->TABLE_NAME),
                 $table->model_name,
                 $table->TABLE_NAME
             );
@@ -234,13 +234,13 @@ class CrudMakeCommand extends Command
         if (version_compare($version, 8, '<')) {
             $line = sprintf(
                 'Route::resource(\'%s\', \'Api\\%sController\');' . PHP_EOL,
-                $table->TABLE_NAME,
+                Str::kebab($table->TABLE_NAME),
                 $table->model_name
             );
         } else {
             $line = sprintf(
                 'Route::resource(\'%s\', App\Http\Controllers\Api\%sController::class);' . PHP_EOL,
-                $table->TABLE_NAME,
+                Str::kebab($table->TABLE_NAME),
                 $table->model_name
             );
         }

@@ -52,7 +52,7 @@ class DummyClass extends Controller implements Exporter
     public function index(): View
     {
         ${{ modelVariables }} = $this->getModels()->paginate(request('limit'));
-        return view('{{ table }}.index', compact('{{ modelVariables }}'));
+        return view('{{ route }}.index', compact('{{ modelVariables }}'));
     }
 
     /**
@@ -62,7 +62,7 @@ class DummyClass extends Controller implements Exporter
      */
     public function create(): View
     {
-        return view('{{ table }}.create');
+        return view('{{ route }}.create');
     }
 
     /**
@@ -77,7 +77,7 @@ class DummyClass extends Controller implements Exporter
         ${{ modelVariable }}->fill(
             $request->all()
         )->save();
-        return redirect()->route('{{ table }}.show', compact('{{ modelVariable }}'))
+        return redirect()->route('{{ route }}.show', compact('{{ modelVariable }}'))
             ->with('success_message', trans('messages.create.success'));
     }
 
@@ -89,7 +89,7 @@ class DummyClass extends Controller implements Exporter
      */
     public function show(DummyModelClass $DummyModelVariable): View
     {
-        return view('{{ table }}.show', compact('DummyModelVariable'));
+        return view('{{ route }}.show', compact('DummyModelVariable'));
     }
 
     /**
@@ -100,7 +100,7 @@ class DummyClass extends Controller implements Exporter
      */
     public function edit({{ model }} ${{ modelVariable }}): View
     {
-        return view('{{ table }}.edit', compact('{{ modelVariable }}'));
+        return view('{{ route }}.edit', compact('{{ modelVariable }}'));
     }
 
     /**
@@ -115,7 +115,7 @@ class DummyClass extends Controller implements Exporter
         ${{ modelVariable }}->fill(
             $request->all()
         )->save();
-        return redirect()->route('{{ table }}.show', compact('{{ modelVariable }}'))
+        return redirect()->route('{{ route }}.show', compact('{{ modelVariable }}'))
             ->with('success_message', trans('messages.edit.success'));
     }
 
@@ -129,7 +129,7 @@ class DummyClass extends Controller implements Exporter
     public function destroy({{ model }} ${{ modelVariable }}): RedirectResponse
     {
         ${{ modelVariable }}->delete();
-        return redirect()->route('{{ table }}.index')
+        return redirect()->route('{{ route }}.index')
             ->with('success_message', trans('messages.delete.success'));
     }
 }
